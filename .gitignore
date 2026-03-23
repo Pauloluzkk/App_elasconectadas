@@ -45,3 +45,8 @@ Thumbs.db
 # ===========================
 # Volumes do banco de dados local (não precisam ir para o repo)
 # mysql-data/
+
+# ===========================
+# ARQUIVOS LOCAIS / TEMPORÁRIOS
+# ===========================
+prompt_ideacao_ux.md

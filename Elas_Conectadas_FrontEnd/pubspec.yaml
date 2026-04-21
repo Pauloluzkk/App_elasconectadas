@@ -1,0 +1,42 @@
+name: elasconectadas_app
+description: "Elas Conectadas — Plataforma de networking feminino"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # HTTP e API
+  http: ^1.2.1
+
+  # Navegação
+  go_router: ^13.2.0
+
+  # Persistência local (token JWT)
+  shared_preferences: ^2.2.3
+
+  # Tipografia
+  google_fonts: ^6.2.1
+
+  # Imagens da rede com cache
+  cached_network_image: ^3.3.1
+
+  # Seletor de imagem (foto de perfil)
+  image_picker: ^1.0.7
+
+  # Ícones extras
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

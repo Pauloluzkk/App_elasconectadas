@@ -129,7 +129,7 @@ export class AuthService {
     }
   }
 
-  async generateOTP(userId: number): Promise<{ userId: number; otp: string }> {
+  async generateOTP(userId: string): Promise<{ userId: string; otp: string }> {
     const otp = crypto.randomInt(100000, 999999).toString();
     const hashedOTP = await bcrypt.hash(otp, 12);
     const now = new Date();
@@ -168,7 +168,7 @@ export class AuthService {
     return { userId, otp };
   }
 
-  async validateOTP(userId: number, token: string): Promise<boolean> {
+  async validateOTP(userId: string, token: string): Promise<boolean> {
     // Checa o status da conta
     const validToken = await this.prisma.oTP.findFirst({
       where: {
@@ -199,7 +199,7 @@ export class AuthService {
     return true;
   }
 
-  async verifyToken(userId: number, token: string) {
+  async verifyToken(userId: string, token: string) {
     await this.validateOTP(userId, token);
 
     const user = await this.prisma.user.update({

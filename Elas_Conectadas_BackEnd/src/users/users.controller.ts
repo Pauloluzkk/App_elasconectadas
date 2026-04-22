@@ -10,7 +10,7 @@ import {
   Post,
   UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
 import { CreateAdminDto } from './dtos/CreateAdmin.dto';
 import { CreateUserDto } from './dtos/CreateUser.dto';
@@ -45,7 +45,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getUserById(@Param('id', ParseIntPipe) id: string) {
     const user = await this.usersService.getUserById(id);
     if (!user) throw new HttpException('User Not Found', 404);
 
@@ -56,15 +56,20 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   updateUserById(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.updateUser(id, updateUserDto);
+    // Aqui nós "arrancamos" o pfp de dentro do DTO e guardamos o resto na variável "dadosParaSalvar"
+    const { pfp, ...dadosParaSalvar } = updateUserDto;
+
+    // Futuramente, é aqui que faremos o upload do 'pfp' para a nuvem!
+    // Por enquanto, mandamos para o banco apenas os dados em texto (nome, email, etc)
+    return this.usersService.updateUser(id, dadosParaSalvar);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  deleteUserById(@Param('id', ParseIntPipe) id: number) {
+  deleteUserById(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
 }

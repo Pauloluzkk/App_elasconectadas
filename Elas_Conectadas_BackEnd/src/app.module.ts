@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { AdsModule } from './ads/ads.module';
+import { ProdutosModule } from './produtos/produtos.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AdsModule } from './ads/ads.module';
     AuthModule,
     AdsModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    ProdutosModule,
   ],
   controllers: [],
   providers: [UsersService],

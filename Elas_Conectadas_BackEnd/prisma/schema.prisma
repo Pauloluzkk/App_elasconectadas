@@ -7,30 +7,43 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique
-  password   String
-  name       String
-  phone      String?
-  dob        String?
-  occupation String?
-  location   String?
-  bio        String?
-  pfp        Bytes?
-  role       UserType
+  id            String    @id @default(uuid()) // Mudamos de Int para UUID
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  dob           String?
+  occupation    String?
+  location      String?
+  bio           String?
+  pfp           String?   // Mudamos de Bytes para String (URL da imagem)
+  role          UserType
 
-  accountStatus AccountStatus @default(UNVERIFIED) // Nova coluna
+  accountStatus AccountStatus @default(UNVERIFIED)
 
-  // Relacionamento com Advertising (M:N)
+  // Relacionamento: Uma empreendedora tem muitos produtos
+  produtos      Produto[]
+
+  // Ajuste nos relacionamentos existentes para aceitar String id
   advertisings AdvertisingOnUsers[]
-  
-  // Relacionamento com Post (Apenas se for ADMIN)
-  posts         PostOnAdmins[]
+  posts        PostOnAdmins[]
+  otps         OTP[]
 
-  // Relacionamento com OTP 1:N (um usuário tem vários OTPs)
-  otps OTP[]
+  @@map("users")
+}
 
-  @@map("users") // opcional: renomear a tabela se necessário
+model Produto {
+  id          String   @id @default(uuid())
+  nome        String
+  descricao   String
+  preco       Float
+  categoria   String
+  imagemUrl   String?  // Adicionado para salvar o link da imagem em vez de Bytes
+  criado_em   DateTime @default(now())
+
+  // Relacionamento: Todo produto PRECISA de um dono
+  userId      String
+  usuario     User     @relation(fields: [userId], references: [id])
 }
 
 enum AccountStatus {
@@ -80,7 +93,7 @@ enum PostType {
 
 // Tabela intermediária para Users <-> Advertising (M:N)
 model AdvertisingOnUsers {
-  userId        Int
+  userId        String
   advertisingId Int
 
   user        User        @relation(fields: [userId], references: [id])
@@ -91,7 +104,7 @@ model AdvertisingOnUsers {
 
 // Tabela intermediária para Admins <-> Post (M:N)
 model PostOnAdmins {
-  adminId Int
+  adminId String
   postId  Int
 
   admin User @relation(fields: [adminId], references: [id])
@@ -107,10 +120,11 @@ enum OTPType {
 
 model OTP {
   id Int @id @default(autoincrement()) 
-  userId Int
+  userId String
   user User @relation(fields: [userId], references: [id])
   token String
   type OTPType
   expiresAt DateTime
   createAt DateTime @default(now())
 }
+

@@ -90,12 +90,12 @@ export class UsersService {
   }
 
   //retorna um usuário por id
-  getUserById(id: number) {
+  getUserById(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
   //atualiza os dados de um usuário por id
-  async updateUser(id: number, data: Prisma.UserUpdateInput) {
+  async updateUser(id: string, data: Prisma.UserUpdateInput) {
     const findUser = await this.getUserById(id);
     if (!findUser) throw new HttpException('Usuário não encontrado', 404);
 
@@ -110,7 +110,7 @@ export class UsersService {
   }
 
   //remove o usuário do banco de dados
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     const findUser = await this.getUserById(id);
     if (!findUser) throw new HttpException('User not found', 404);
     return this.prisma.user.delete({ where: { id } });

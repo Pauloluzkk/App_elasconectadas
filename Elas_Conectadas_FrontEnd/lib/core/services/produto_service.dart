@@ -17,7 +17,7 @@ class ProdutoService {
 
   // ── Criar produto/serviço ────────────────────────────────────────────────────
   /// [imagemBytes] são os bytes da imagem selecionada pelo usuário (opcional).
-  /// Serão convertidos para base64 e enviados como imagemUrl.
+  /// Serão enviados para o Cloudinary via backend, que retornará a URL.
   static Future<ProdutoModel> criar({
     required String nome,
     required String descricao,
@@ -26,20 +26,49 @@ class ProdutoService {
     required String userId,
     Uint8List? imagemBytes,
   }) async {
-    final url = Uri.parse('${AppConfig.apiUrl}${AppConfig.produtosEndpoint}');
-
-    // Converte imagem para base64 se fornecida
     String? imagemUrl;
+
+    // 🚀 PASSO 1: O Upload da Imagem para o Cloudinary (via NestJS)
     if (imagemBytes != null) {
-      imagemUrl = 'data:image/jpeg;base64,${base64Encode(imagemBytes)}';
+      final uploadUrl = Uri.parse('${AppConfig.apiUrl}/upload/imagem');
+      
+      var request = http.MultipartRequest('POST', uploadUrl);
+      
+      // Enviamos o token caso a sua rota de upload exija estar logado
+      final token = await AuthService.getToken();
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Anexamos a imagem na requisição ('file' é o nome que o NestJS espera)
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file', 
+          imagemBytes,
+          filename: 'upload.jpg', // Nome genérico
+        ),
+      );
+
+      // Enviamos e aguardamos a resposta
+      final streamedResponse = await request.send().timeout(const Duration(seconds: 15));
+      final uploadResponse = await http.Response.fromStream(streamedResponse);
+
+      if (uploadResponse.statusCode == 200 || uploadResponse.statusCode == 201) {
+        final responseData = jsonDecode(uploadResponse.body);
+        // Pegamos o link levinho que o servidor devolveu!
+        imagemUrl = responseData['imageUrl']; 
+      } else {
+        throw Exception('Erro ao fazer upload da imagem: ${uploadResponse.statusCode}');
+      }
     }
+
+    // 🚀 PASSO 2: Criar o Produto no Banco de Dados
+    final url = Uri.parse('${AppConfig.apiUrl}${AppConfig.produtosEndpoint}');
 
     final body = ProdutoModel(
       nome: nome,
       descricao: descricao,
       preco: preco,
       categoria: categoria,
-      imagemUrl: imagemUrl,
+      imagemUrl: imagemUrl, // Aqui vai o link do Cloudinary (ou null)
       userId: userId,
     ).toJson();
 

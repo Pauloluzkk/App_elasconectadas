@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { AdsModule } from './ads/ads.module';
 import { ProdutosModule } from './produtos/produtos.module';
+import { UploadModule } from './upload/upload.module';
+
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { ProdutosModule } from './produtos/produtos.module';
     AdsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ProdutosModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [UsersService],

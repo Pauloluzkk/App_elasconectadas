@@ -25,4 +25,7 @@ class AppConfig {
 
   // Endpoints de posts (mural)
   static const String postsEndpoint = '/posts';
+
+  // Endpoint de produtos/serviços
+  static const String produtosEndpoint = '/produtos';
 }

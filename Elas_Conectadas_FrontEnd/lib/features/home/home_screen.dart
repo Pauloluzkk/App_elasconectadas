@@ -117,11 +117,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Novo anúncio', style: AppTextStyles.headlineMedium),
+            Text('O que você quer publicar?', style: AppTextStyles.headlineMedium),
+            const SizedBox(height: 8),
+            Text('Parcerias serão adicionadas em breve', style: AppTextStyles.bodyMedium),
             const SizedBox(height: 16),
-            _SheetOption(icon: Icons.shopping_bag_outlined, label: 'Produto', onTap: () => Navigator.pop(context)),
-            _SheetOption(icon: Icons.design_services_outlined, label: 'Serviço', onTap: () => Navigator.pop(context)),
-            _SheetOption(icon: Icons.handshake_outlined, label: 'Parceria', onTap: () => Navigator.pop(context)),
+            _SheetOption(
+              icon: Icons.shopping_bag_outlined,
+              label: 'Produto',
+              subtitle: 'Venda algo que você produz',
+              onTap: () {
+                Navigator.pop(context);
+                context.go('/criar-anuncio');
+              },
+            ),
+            _SheetOption(
+              icon: Icons.design_services_outlined,
+              label: 'Serviço',
+              subtitle: 'Ofereça uma habilidade ou serviço',
+              onTap: () {
+                Navigator.pop(context);
+                context.go('/criar-anuncio');
+              },
+            ),
             const SizedBox(height: 8),
           ],
         ),
@@ -263,14 +280,18 @@ class _AdCard extends StatelessWidget {
 class _SheetOption extends StatelessWidget {
   final IconData icon;
   final String label;
+  final String? subtitle;
   final VoidCallback onTap;
-  const _SheetOption({required this.icon, required this.label, required this.onTap});
+  const _SheetOption({required this.icon, required this.label, required this.onTap, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: AppColors.primary),
       title: Text(label, style: AppTextStyles.bodyLarge),
+      subtitle: subtitle != null
+          ? Text(subtitle!, style: AppTextStyles.labelMedium)
+          : null,
       trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textLight),
       onTap: onTap,
     );

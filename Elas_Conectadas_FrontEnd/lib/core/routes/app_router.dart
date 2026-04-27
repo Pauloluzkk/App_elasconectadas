@@ -6,6 +6,7 @@ import '../../features/auth/otp_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/mural/mural_screen.dart';
+import '../../features/ads/create_ad_screen.dart';
 import '../services/auth_service.dart';
 
 final appRouter = GoRouter(
@@ -33,6 +34,10 @@ final appRouter = GoRouter(
         final email = state.extra as String;
         return OtpScreen(email: email);
       },
+    ),
+    GoRoute(
+      path: '/criar-anuncio',
+      builder: (context, state) => const CreateAdScreen(),
     ),
     ShellRoute(
       builder: (context, state, child) => MainShell(child: child),
